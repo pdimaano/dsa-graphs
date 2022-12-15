@@ -11,18 +11,21 @@ class Node {
 
 class Graph {
   constructor() {
-    this.nodes = new Set();
+    this._nodes = new Set();
   }
 
   /** add Node instance and add it to nodes property on graph. */
+  //TODO: Also add all adjacent nodes to the vertex that is being added
   addVertex(vertex) {
-    return this.nodes.add(vertex);
+    return this._nodes.add(vertex);
   }
 
-  /** add array of new Node instances and adds to them to nodes property. */
+  /** add array of new Node instances and adds to them to nodes property.
+   * //TODO: refactor so we are calling the above function ;-) Thanks Kate!
+  */
   addVertices(vertexArray) {
     for (let node of vertexArray) {
-      this.nodes.add(node);
+      this._nodes.add(node);
     }
   }
 
@@ -39,47 +42,90 @@ class Graph {
   }
 
   /** remove vertex from graph:
-   *
    * - remove it from nodes property of graph
    * - update any adjacency lists using that vertex
    */
   removeVertex(vertex) {
-    for (let node of this.nodes) {
-      if (node === vertex) {
-        this.nodes.delete(node);
-        node.adjacent.delete(vertex);
+    for (let node of this._nodes) {
+      if (node.adjacent.has(vertex)) {
+        //TODO: delete it from that adjacent list
       }
     }
+    this._nodes.delete(vertex);
   }
 
   /** traverse graph with DFS and returns array of Node values */
   depthFirstSearch(start) {
-    // Need to iterate over all adjacent nodes of target node
-    // Possibly use recursive helper function
-    // Keep array of everything we visited, outside of helper function
-    // Within for loop, can inspect child node that isn't in visited array
-    // If not in visited array, add to visited array
-    // Pass in function again so target array is adjacent array
-    // Visited array must live outside of helper function (returned at end)
+    let visitedNodes = [start]; //TODO: Change into a set
+    let resultValues = [start.value];
 
-    let visitedNodes = [];
+    function _dfsrecursive(currentNode = start) {
 
-    function _dfsrecursive(visitedNodes, currentNode = start) {
-      console.log(currentNode.nodes, currentNode.nodes.adjacent);
-      for (let node of currentNode.nodes) {
+      currentNode.adjacent.forEach(node => {
+
         if (!visitedNodes.includes(node)) {
           visitedNodes.push(node);
+          resultValues.push(node.value);
+          _dfsrecursive(node);
         }
-      }
+      });
     }
-    _dfsrecursive(visitedNodes);
+    _dfsrecursive();
+    return resultValues;
   }
 
   /** traverse graph with BDS and returns array of Node values */
-  breadthFirstSearch(start) {}
+  breadthFirstSearch(start) {
+    let visitedNodes = [start]; //TODO: Change into a set
+    let resultValues = [start.value];
+    let nextQueue = [start];
+
+    while (nextQueue.length !== 0) {
+      let currentNode = nextQueue.shift();
+
+      currentNode.adjacent.forEach(node => {
+        if (!visitedNodes.includes(node)) {
+          visitedNodes.push(node);
+          resultValues.push(node.value);
+          nextQueue.push(node);
+        }
+      });
+      console.log("resultValues ----> ", resultValues);
+    }
+    return resultValues;
+  }
+
 
   /** find the distance of the shortest path from the start vertex to the end vertex */
-  distanceOfShortestPath(start, end) {}
+  distanceOfShortestPath(start, end) {
+
+    let visitedNodes = [start];
+    let queueWithLevel = [[start, 1]];  //[ R, 1 ]
+    let count = 1;
+    //How to keep track of level?
+
+    while (queueWithLevel.length !== 0) {
+      let currentNode = queueWithLevel.shift(); // [R, 1]
+      if (currentNode[0] === end) return currentNode[1];
+
+      currentNode.adjacent.forEach(nodeArr => {
+        if (!visitedNodes.includes(nodeArr[0])) {
+          visitedNodes.push(node);
+          queueWithLevel.push([node, nodeArr[1]++]);
+        }
+      });
+
+    }
+
+
+
+
+    //count - initialized to 1
+
+    //start --> each iteration ---> add+1 to count
+    //iterate over all adjacents
+    // return count once found
+  }
 }
 
 module.exports = { Graph, Node };
