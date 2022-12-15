@@ -54,10 +54,25 @@ class Graph {
 
   /** traverse graph with DFS and returns array of Node values */
   depthFirstSearch(start) {
+    // Need to iterate over all adjacent nodes of target node
     // Possibly use recursive helper function
     // Keep array of everything we visited, outside of helper function
-    // Within function, can inspect one child node that isn't in visited array
-    // If in visited array
+    // Within for loop, can inspect child node that isn't in visited array
+    // If not in visited array, add to visited array
+    // Pass in function again so target array is adjacent array
+    // Visited array must live outside of helper function (returned at end)
+
+    let visitedNodes = [];
+
+    function _dfsrecursive(visitedNodes, currentNode = start) {
+      console.log(currentNode.nodes, currentNode.nodes.adjacent);
+      for (let node of currentNode.nodes) {
+        if (!visitedNodes.includes(node)) {
+          visitedNodes.push(node);
+        }
+      }
+    }
+    _dfsrecursive(visitedNodes);
   }
 
   /** traverse graph with BDS and returns array of Node values */
