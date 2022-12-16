@@ -15,17 +15,15 @@ class Graph {
   }
 
   /** add Node instance and add it to nodes property on graph. */
-  //TODO: Also add all adjacent nodes to the vertex that is being added
   addVertex(vertex) {
-    return this._nodes.add(vertex);
+    this._nodes.add(vertex);
   }
 
   /** add array of new Node instances and adds to them to nodes property.
-   * //TODO: refactor so we are calling the above function ;-) Thanks Kate!
-  */
+   */
   addVertices(vertexArray) {
     for (let node of vertexArray) {
-      this._nodes.add(node);
+      this.addVertex(node);
     }
   }
 
@@ -48,7 +46,7 @@ class Graph {
   removeVertex(vertex) {
     for (let node of this._nodes) {
       if (node.adjacent.has(vertex)) {
-        //TODO: delete it from that adjacent list
+        node.adjacent.delete(vertex);
       }
     }
     this._nodes.delete(vertex);
@@ -56,15 +54,14 @@ class Graph {
 
   /** traverse graph with DFS and returns array of Node values */
   depthFirstSearch(start) {
-    let visitedNodes = [start]; //TODO: Change into a set
+    let visitedNodes = new Set();
+    visitedNodes.add(start);
     let resultValues = [start.value];
 
     function _dfsrecursive(currentNode = start) {
-
-      currentNode.adjacent.forEach(node => {
-
-        if (!visitedNodes.includes(node)) {
-          visitedNodes.push(node);
+      currentNode.adjacent.forEach((node) => {
+        if (!visitedNodes.has(node)) {
+          visitedNodes.add(node);
           resultValues.push(node.value);
           _dfsrecursive(node);
         }
@@ -76,16 +73,17 @@ class Graph {
 
   /** traverse graph with BDS and returns array of Node values */
   breadthFirstSearch(start) {
-    let visitedNodes = [start]; //TODO: Change into a set
+    let visitedNodes = new Set();
+    visitedNodes.add(start);
     let resultValues = [start.value];
     let nextQueue = [start];
 
     while (nextQueue.length !== 0) {
       let currentNode = nextQueue.shift();
 
-      currentNode.adjacent.forEach(node => {
-        if (!visitedNodes.includes(node)) {
-          visitedNodes.push(node);
+      currentNode.adjacent.forEach((node) => {
+        if (!visitedNodes.has(node)) {
+          visitedNodes.add(node);
           resultValues.push(node.value);
           nextQueue.push(node);
         }
@@ -95,12 +93,10 @@ class Graph {
     return resultValues;
   }
 
-
   /** find the distance of the shortest path from the start vertex to the end vertex */
   distanceOfShortestPath(start, end) {
-
     let visitedNodes = [start];
-    let queueWithLevel = [[start, 1]];  //[ R, 1 ]
+    let queueWithLevel = [[start, 1]]; //[ R, 1 ]
     let count = 1;
     //How to keep track of level?
 
@@ -108,17 +104,13 @@ class Graph {
       let currentNode = queueWithLevel.shift(); // [R, 1]
       if (currentNode[0] === end) return currentNode[1];
 
-      currentNode.adjacent.forEach(nodeArr => {
+      currentNode.adjacent.forEach((nodeArr) => {
         if (!visitedNodes.includes(nodeArr[0])) {
           visitedNodes.push(node);
           queueWithLevel.push([node, nodeArr[1]++]);
         }
       });
-
     }
-
-
-
 
     //count - initialized to 1
 
