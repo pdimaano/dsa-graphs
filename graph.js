@@ -88,26 +88,25 @@ class Graph {
           nextQueue.push(node);
         }
       });
-      console.log("resultValues ----> ", resultValues);
     }
     return resultValues;
   }
 
   /** find the distance of the shortest path from the start vertex to the end vertex */
   distanceOfShortestPath(start, end) {
-    let visitedNodes = [start];
-    let queueWithLevel = [[start, 1]]; //[ R, 1 ]
-    let count = 1;
+    let visitedNodes = [];
+    let queueWithLevel = [[start, 0]]; //[ R, 1 ]
     //How to keep track of level?
 
     while (queueWithLevel.length !== 0) {
-      let currentNode = queueWithLevel.shift(); // [R, 1]
-      if (currentNode[0] === end) return currentNode[1];
+      let [currentNode, level] = queueWithLevel.shift(); // [R, 1]
+      console.log("CURRENT NODE------>", currentNode);
+      if (currentNode === end) return level;
 
-      currentNode.adjacent.forEach((nodeArr) => {
-        if (!visitedNodes.includes(nodeArr[0])) {
+      currentNode.adjacent.forEach((node) => {
+        if (!visitedNodes.includes(node)) {
+          queueWithLevel.push([node, level + 1]);
           visitedNodes.push(node);
-          queueWithLevel.push([node, nodeArr[1]++]);
         }
       });
     }
@@ -115,7 +114,7 @@ class Graph {
     //count - initialized to 1
 
     //start --> each iteration ---> add+1 to count
-    //iterate over all adjacents
+    //iterate over all adjacent nodes
     // return count once found
   }
 }
